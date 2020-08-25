@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>config('app.name')</title>
+    <title>{{ config('app.name') }}</title>
 
     <!-- Custom fonts for this template-->
     <link href="{{ asset('v1/vendor/fontawesome-free-5.14.0/css/all.min.css') }}" rel="stylesheet" type="text/css">

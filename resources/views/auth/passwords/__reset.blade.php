@@ -19,7 +19,7 @@
                                 <p class="mb-4">We get it, stuff happens. Just enter your email address below
                                     and we'll send you a link to reset your password!</p>
                             </div>
-                            <form class="user" method="POST" action="{{ route('password.email') }}">
+                            <form class="user" method="POST" action="{{ route('password.update') }}">
                                 @csrf
                                 <div class="form-group">
                                     <input type="email" name="email"
