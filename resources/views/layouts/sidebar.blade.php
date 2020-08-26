@@ -49,11 +49,15 @@
         Settings
     </div>
     <!-- Nav Item - User Management -->
+    @if (auth()->user()->hasRole('admin'))
+
     <li class="nav-item {{ $page == 'user' ? 'active' : '' }}">
         <a class="nav-link" href="">
             <i class="fas fa-users-cog"></i>
             <span>User Management</span></a>
     </li>
+    @endif
+
     @guest
     <li class="nav-item">
         <a class="nav-link" href="{{ route('login') }}">

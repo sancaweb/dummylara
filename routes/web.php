@@ -6,7 +6,10 @@ use Illuminate\Support\Facades\Route;
 Auth::routes();
 
 // Route::get('/', 'HomeController@index')->name('home');
-Route::get('/', 'DashboardController@index')->name('dashboard');
+
+route::group(['middleware' => ['auth']], function () {
+    Route::get('/', 'DashboardController@index')->name('dashboard');
+});
 
 
 Route::group(['middleware' => ['auth', 'role:admin']], function () {
