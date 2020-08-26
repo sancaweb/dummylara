@@ -15,6 +15,7 @@ class DashboardController extends Controller
     {
         $dataPage = [
             'title' => "Dashboard",
+            'page' => "dashboard"
 
         ];
         return view('dashboard.index', $dataPage);

@@ -49,8 +49,8 @@
         Settings
     </div>
     <!-- Nav Item - User Management -->
-    <li class="nav-item">
-        <a class="nav-link" href="#">
+    <li class="nav-item {{ $page == 'user' ? 'active' : '' }}">
+        <a class="nav-link" href="">
             <i class="fas fa-users-cog"></i>
             <span>User Management</span></a>
     </li>
@@ -62,7 +62,7 @@
     </li>
 
     @else
-    <li class="nav-item active">
+    <li class="nav-item">
         <a class="nav-link" href="{{ route('logout') }}" onclick="event.preventDefault();
             document.getElementById('logout-form').submit();">
             <i class="fas fa-sign-out-alt"></i>

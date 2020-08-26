@@ -7,14 +7,17 @@ use App\User;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
-        //
+        $dataPage = [
+            'title' => "User List",
+            'page' => 'user',
+            'action' => route('user.store'),
+            'user' => null
+        ];
+
+        return view('user.index', $dataPage);
     }
 
     /**

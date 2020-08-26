@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ $title.' - '.config('app.name') }}</title>
 
@@ -19,6 +20,10 @@
 
     <!-- Custom styles for this template-->
     <link href="{{ asset('v1/css/sb-admin-2.min.css')}}" rel="stylesheet">
+    <!-- datatable -->
+    {{-- <link href="//cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" rel="stylesheet"> --}}
+    <link href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+
 
 </head>
 
@@ -98,9 +103,20 @@
     <!-- Core plugin JavaScript-->
     <script src="{{ asset('v1/vendor/jquery-easing/jquery.easing.min.js') }}"></script>
 
+    <!-- datatables -->
+    <script src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('v1/js/sb-admin-2.min.js') }}"></script>
+    <script>
+        let base_url = "{{ route('dashboard') }}";
 
+    </script>
+
+    @if ($page == 'user')
+    <script src="{{ asset('v1/js/page/user.js') }}"></script>
+    @endif
     <!-- Page level plugins -->
 
     <!-- Page level custom scripts -->
