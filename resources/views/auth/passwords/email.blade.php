@@ -41,9 +41,13 @@
                                 <i class="fas fa-undo"></i>&nbsp; Forgot Password
                             </a>
                             @endif
+                            <a href="{{ route('login') }}" class="btn btn-facebook btn-user btn-block">
+                                <i class="fas fa-unlock-alt"></i>&nbsp; Already have an account? Login!
+                            </a>
                             <a href="{{ route('register') }}" class="btn btn-facebook btn-user btn-block">
                                 <i class="fas fa-unlock-alt"></i>&nbsp; Create an Account
                             </a>
+
                             <hr>
                         </div>
                     </div>

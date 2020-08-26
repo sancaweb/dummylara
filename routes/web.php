@@ -18,3 +18,15 @@ Auth::routes();
 
 // Route::get('/', 'HomeController@index')->name('home');
 Route::get('/', 'DashboardController@index')->name('dashboard');
+
+Route::group(['middleware' => ['auth', 'role:admin']], function () {
+    Route::get('/admin', function () {
+        return "Halaman Admin";
+    });
+});
+
+Route::group(['middleware' => ['auth', 'role:user']], function () {
+    Route::get('/user', function () {
+        return "Halaman User";
+    });
+});
