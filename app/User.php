@@ -2,10 +2,11 @@
 
 namespace App;
 
+use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
@@ -17,7 +18,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'foto', 'username'
     ];
 
     /**
@@ -37,4 +38,19 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function takeImage()
+    {
+        if ($this->foto === null) {
+            return "/images/no-image.png";
+        } else {
+
+            $exist = Storage::exists($this->foto);
+            if ($exist) {
+                return "/storage/" . $this->foto;
+            } else {
+                return "images/no-image.png";
+            }
+        }
+    }
 }

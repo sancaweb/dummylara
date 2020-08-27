@@ -106,6 +106,8 @@
     <!-- datatables -->
     <script src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+    <!-- Sweetalert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('v1/js/sb-admin-2.min.js') }}"></script>
@@ -115,7 +117,7 @@
     </script>
 
     @if ($page == 'user')
-    <script src="{{ asset('v1/js/page/user.js') }}"></script>
+    <script src="{{ asset('v1/js/page/user.js?v=1.00') }}"></script>
     @endif
     <!-- Page level plugins -->
 

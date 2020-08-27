@@ -2,87 +2,211 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\User;
+use Exception;
+use Illuminate\Http\Request;
+use App\Http\Requests\UserRequest;
+use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
 
+    public function tes(User $user)
+    {
+
+        dd($user->roles()->pluck('name'));
+    }
+
     public function index()
     {
+        // dd(Role::all()->pluck('name'));
         $dataPage = [
             'title' => "User List",
             'page' => 'user',
             'action' => route('user.store'),
-            'user' => null
+            'user' => null,
+            'roles' => Role::all()->pluck('name'),
         ];
 
         return view('user.index', $dataPage);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function store(UserRequest $request)
     {
-        //
+        // dd($request->file('foto'));
+        DB::beginTransaction();
+        try {
+            $input = $request->all();
+
+
+            if ($request->hasFile('foto')) {
+                $foto = $request->file('foto');
+                $fotoUrl = $foto->store("images/user");
+            } else {
+                $fotoUrl = null;
+            }
+
+
+            $input['password'] = Hash::make($input['password']);
+            $input['name'] = ucwords($input['name']);
+            $input['foto'] = $fotoUrl;
+            $user = User::create($input);
+
+            $user->assignRole($input['role']);
+        } catch (Exception $uStore) {
+            DB::rollBack();
+
+            $dataJson['exception'] = $uStore;
+            $dataJson['message'] = "Ada kesalahan peng-kodean store User. Detail Error: ";
+            return response()->json($dataJson, 503);
+        }
+
+        DB::commit();
+
+        $dataJson['message'] = "Data User berhasil ditambahkan";
+        return response()->json($dataJson, 200);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function show(User $user)
     {
-        //
+        //...
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    public function edit(User $user)
     {
-        //
+        $user['foto'] = $user->takeImage();
+        $dataJson['message'] = "Data User ditemukan";
+        $dataJson['data'] = [
+            'dataUser' => $user,
+            'action' => route('user.update', $user->id)
+        ];
+        return response()->json($dataJson, 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    public function update(UserRequest $request, User $user)
     {
-        //
+        DB::beginTransaction();
+
+        try {
+            $input = $request->all();
+            if ($request->hasFile('foto')) {
+                $foto = $request->file('foto');
+                $fotoUrl = $foto->store("images/user");
+                Storage::delete($user->foto);
+            } else {
+                $fotoUrl = $user->foto;
+            }
+
+
+            $input['password'] = Hash::make($input['password']);
+            $input['name'] = ucwords($input['name']);
+            $input['foto'] = $fotoUrl;
+            $user->update($input);
+
+            $user->syncRoles($input['role']);
+        } catch (Exception $userUpdate) {
+            DB::rollBack();
+            $dataJson['exception'] = $userUpdate;
+            $dataJson['message'] = "Ada kesalahan peng-kodean update User. Detail Error: ";
+            return response()->json($dataJson, 503);
+        }
+
+        DB::commit();
+        $dataJson['message'] = "Data User berhasil dirubah";
+        return response()->json($dataJson, 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         //
+    }
+
+    public function datatable(Request $request)
+    {
+        $columns = array(
+            0 => 'id',
+            1 => 'foto',
+            2 => 'name',
+            3 => 'usrname',
+            4 => 'email',
+            5 => 'created_at',
+        );
+
+        $totalData = User::count();
+
+        $totalFiltered = $totalData;
+
+        $limit = $request->input('length');
+        $start = $request->input('start');
+        $order = $columns[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
+
+        if (empty($request->input('search.value'))) {
+
+            $users = User::offset($start)
+                ->limit($limit)
+                ->orderBy($order, $dir)
+                ->get();
+        } else {
+            $search = $request->input('search.value');
+
+            $users =  User::where('name', 'LIKE', "%{$search}%")
+                ->orWhere('username', 'LIKE', "%{$search}%")
+                ->orWhere('email', 'LIKE', "%{$search}%")
+                ->offset($start)
+                ->limit($limit)
+                ->orderBy($order, $dir)
+                ->get();
+
+
+            $totalFiltered = User::where('name', 'LIKE', "%{$search}%")
+                ->orWhere('username', 'LIKE', "%{$search}%")
+                ->orWhere('email', 'LIKE', "%{$search}%")
+                ->count();
+        }
+
+        $data = array();
+        if (!empty($users)) {
+            $no = $start;
+            foreach ($users as $user) {
+                $no++;
+                $nestedData['no'] = $no;
+                $nestedData['foto'] = '<img style="height: 100px; width:100px; object-fit:cover; object-position:center;" src="' . $user->takeImage() . '" alt="' . $user->username . '" class="rounded img-fluid img-thumbnail">';
+                $nestedData['name'] = $user->name;
+                $nestedData['username'] = $user->username;
+                $nestedData['email'] = $user->email;
+                $nestedData['created_at'] = $user->created_at->translatedFormat('j F Y H:i:s');
+
+                $nestedData['action'] = '<button data-id="' . $user->id . '" class="btn btn-warning btn-circle btn-edit">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button type="button" data-id="' . $user->id . '" class="btn btn-danger btn-circle btn-delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            ';
+
+                $data[] = $nestedData;
+            }
+        }
+
+        $json_data = array(
+            "draw"            => intval($request->input('draw')),
+            "recordsTotal"    => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data"            => $data,
+            "order"           => $order,
+            "dir" => $dir
+        );
+
+
+        return response()->json($json_data, 200);
     }
 }

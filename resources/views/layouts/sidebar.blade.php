@@ -52,7 +52,7 @@
     @if (auth()->user()->hasRole('admin'))
 
     <li class="nav-item {{ $page == 'user' ? 'active' : '' }}">
-        <a class="nav-link" href="">
+        <a class="nav-link" href="{{ route('user') }}">
             <i class="fas fa-users-cog"></i>
             <span>User Management</span></a>
     </li>
