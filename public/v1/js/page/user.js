@@ -17,10 +17,11 @@ jQuery(document).ready(function ($) {
         }
     }
 
-
-    function resetImageForm() {
+    function formReset() {
+        $('#formUser')[0].reset();
         $('#imgReview').attr('src', base_url + '/images/no-image.png');
     }
+
 
     $('#foto').on("change", function () {
         var review = 'imgReview';
@@ -74,7 +75,7 @@ jQuery(document).ready(function ($) {
     });
 
     function refreshTable() {
-        tableUser.search("").draw();
+        // tableUser.search("").draw();
         tableUser.ajax.reload();
     }
     /** ./end datatable */
@@ -98,7 +99,6 @@ jQuery(document).ready(function ($) {
             processData: false,
             dataType: "JSON",
             success: function (data) {
-                $('#formUser')[0].reset();
                 Swal.fire({
                     icon: "success",
                     title: data.message,
@@ -108,7 +108,8 @@ jQuery(document).ready(function ($) {
                 }).then(function () {
                     refreshTable();
                     $("#formUser").attr("action", base_url + "/user");
-                    resetImageForm();
+                    formReset();
+
                     $('[name="_method"]').remove();
                 });
             },
@@ -208,6 +209,66 @@ jQuery(document).ready(function ($) {
                 }
             }
         });
+
+    });
+
+    $('#tbl-user').on("click", ".btn-delete", function () {
+        Swal.fire({
+            title: 'Anda yakin?',
+            text: "Anda yakin ingin menghapus data?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!',
+            allowOutsideClick: false
+        }).then((result) => {
+            if (result.value) {
+                swal.fire({
+                    imageUrl: base_url + "/images/loading.gif",
+                    imageHeight: 300,
+                    showConfirmButton: false,
+                    title: "Loading ...",
+                    allowOutsideClick: false
+                });
+
+                var idUser = $(this).data('id');
+                var urlDelete = base_url + '/user/' + idUser + '/delete';
+                $.ajax({
+                    url: urlDelete,
+                    type: "DELETE",
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+                        Swal.fire({
+                            icon: "success",
+                            title: data.message,
+                            showConfirmButton: false,
+                            timer: 2000,
+                            allowOutsideClick: false
+                        }).then(function () {
+                            refreshTable();
+                        });
+
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+
+                        var error = jqXHR.responseJSON;
+                        Swal.fire({
+                            icon: "error",
+                            title: error.message,
+                            showConfirmButton: false,
+                            timer: 2000,
+                            allowOutsideClick: false
+                        });
+
+                    }
+                });
+
+            }
+        });
+
+
 
     });
 

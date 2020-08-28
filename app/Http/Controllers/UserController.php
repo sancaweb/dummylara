@@ -124,9 +124,14 @@ class UserController extends Controller
         return response()->json($dataJson, 200);
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, User $user)
     {
-        //
+        Storage::delete($user->foto);
+        $user->delete();
+        $user->roles()->detach();
+
+        $dataJson['message'] = "User berhasil dihapus";
+        return response()->json($dataJson, 200);
     }
 
     public function datatable(Request $request)
