@@ -23,7 +23,14 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
     Route::post('/user', 'UserController@store')->name('user.store');
     Route::get('/user/{user}/edit', 'UserController@edit')->name('user.edit');
     Route::patch('/user/{user}/update', 'UserController@update')->name('user.update');
-    Route::delete('/user/{user}/delete', 'UserController@destroy')->name('user.delete');
+    Route::delete('/user/{user}/delete', 'UserController@delete')->name('user.delete');
+
+    //User trash
+    Route::get('/usertrash', 'UserController@trash')->name('user.trash');
+    Route::post('/usertrashtable', 'UserController@trashedDatatable')->name('user.trashedTable');
+    Route::post('/usertrash/{user}/restore', 'UserController@restore')->name('user.restore');
+    Route::delete('/usertrash/{user}/destroy', 'UserController@destroy')->name('user.destroy');
+
 
     Route::get('/user/{user}/tes', 'UserController@tes')->name('user.tes');
 });

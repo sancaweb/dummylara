@@ -1,6 +1,19 @@
 <div class="card shadow border-left-primary mb-4">
-    <div class="card-body table-responsive">
-        <table class="table table-bordered" id="tbl-user">
+
+    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <a id="linkCardDataCollapse" href="#cardUserData" class="d-block card-header py-3" data-toggle="collapse"
+            role="button" aria-expanded="true" aria-controls="cardUserData">
+            <h6 class="m-0 font-weight-bold text-primary">Data Users</h6>
+        </a>
+        <a href="{{ route('user.trash') }}" class="btn btn-danger btn-icon-split">
+            <span class="icon text-white-50">
+                <i class="fas fa-trash"></i>
+            </span>
+            <span class="text">User Trash</span>
+        </a>
+    </div>
+    <div class="card-body table-responsive collapse show" id="cardUserData">
+        <table class="table table-bordered" id="tbl-user" style="width: 100%">
             <thead>
                 <tr>
                     <th class="text-center">No</th>
@@ -13,31 +26,7 @@
                 </tr>
             </thead>
             <tbody>
-                {{-- @foreach ($dataUser as $user)
-                    <tr>
-                        <td class="text-center align-middle">1</td>
-                        <td class="text-center align-middle">
-                            <img style="height: 100px; width:100px; object-fit:cover; object-position:center;" src="{{ $user->takeImage() }}"
-                alt="{{ $user->username }}" class="rounded img-fluid img-thumbnail">
-                </td>
-                <td class="text-center align-middle">{{ $user->name }}</td>
-                <td class="text-center align-middle">{{ $user->username }}</td>
-                <td class="text-center align-middle">{{ $user->email }}</td>
-                <td class="text-center align-middle">
-                    <a href="{{ route('user.edit', $user->id) }}" class="btn btn-warning btn-circle ">
-                        <i class="fas fa-edit"></i>
-                    </a>
-                    <form action="{{ route('user.delete', $user->id) }}" method="post" class="d-inline">
-                        @csrf
-                        @method('delete')
-                        <button type="submit" class="btn btn-danger btn-circle ">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </form>
 
-                </td>
-                </tr>
-                @endforeach --}}
 
             </tbody>
         </table>

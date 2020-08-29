@@ -124,10 +124,41 @@ class UserController extends Controller
         return response()->json($dataJson, 200);
     }
 
-    public function destroy(Request $request, User $user)
+    public function delete(Request $request, User $user)
     {
-        Storage::delete($user->foto);
         $user->delete();
+
+        $dataJson['message'] = "User berhasil dihapus";
+        return response()->json($dataJson, 200);
+    }
+
+    public function trash()
+    {
+        $dataPage = [
+            'title' => "Trashed User",
+            'page' => 'user',
+        ];
+
+        return view('user.trash', $dataPage);
+    }
+
+    public function restore(Request $request, $id)
+    {
+        // $user->restore();
+        $user = User::onlyTrashed()->where('id', $id);
+        $user->restore();
+
+        $dataJson['message'] = "User berhasil di restore";
+
+        return response()->json($dataJson, 200);
+    }
+
+    public function destroy(Request $request, $id)
+    {
+        $user = User::onlyTrashed()->where('id', $id)->first();
+
+        Storage::delete($user->foto);
+        $user->forceDelete();
         $user->roles()->detach();
 
         $dataJson['message'] = "User berhasil dihapus";
@@ -197,6 +228,86 @@ class UserController extends Controller
                                 <i class="fas fa-trash"></i>
                             </button>
                             ';
+
+                $data[] = $nestedData;
+            }
+        }
+
+        $json_data = array(
+            "draw"            => intval($request->input('draw')),
+            "recordsTotal"    => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data"            => $data,
+            "order"           => $order,
+            "dir" => $dir
+        );
+
+
+        return response()->json($json_data, 200);
+    }
+
+    public function trashedDatatable(Request $request)
+    {
+        $columns = array(
+            0 => 'id',
+            1 => 'foto',
+            2 => 'name',
+            3 => 'usrname',
+            4 => 'email',
+            5 => 'created_at',
+        );
+
+        $totalData = User::onlyTrashed()->count();
+
+        $totalFiltered = $totalData;
+
+        $limit = $request->input('length');
+        $start = $request->input('start');
+        $order = $columns[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
+
+        if (empty($request->input('search.value'))) {
+
+            $users = User::onlyTrashed()->offset($start)
+                ->limit($limit)
+                ->orderBy($order, $dir)
+                ->get();
+        } else {
+            $search = $request->input('search.value');
+
+            $users =  User::onlyTrashed()->where('name', 'LIKE', "%{$search}%")
+                ->orWhere('username', 'LIKE', "%{$search}%")
+                ->orWhere('email', 'LIKE', "%{$search}%")
+                ->offset($start)
+                ->limit($limit)
+                ->orderBy($order, $dir)
+                ->get();
+
+
+            $totalFiltered = User::onlyTrashed()->where('name', 'LIKE', "%{$search}%")
+                ->orWhere('username', 'LIKE', "%{$search}%")
+                ->orWhere('email', 'LIKE', "%{$search}%")
+                ->count();
+        }
+
+        $data = array();
+        if (!empty($users)) {
+            $no = $start;
+            foreach ($users as $user) {
+                $no++;
+                $nestedData['no'] = $no;
+                $nestedData['foto'] = '<img style="height: 100px; width:100px; object-fit:cover; object-position:center;" src="' . $user->takeImage() . '" alt="' . $user->username . '" class="rounded img-fluid img-thumbnail">';
+                $nestedData['name'] = $user->name;
+                $nestedData['username'] = $user->username;
+                $nestedData['email'] = $user->email;
+                $nestedData['created_at'] = $user->created_at->translatedFormat('j F Y H:i:s');
+
+                $nestedData['action'] = '<button data-id="' . $user->id . '" class="btn btn-warning btn-circle btn-restore" title="Restore User">
+                <i class="fas fa-trash-restore"></i>
+                            </button>
+                            <button type="button" data-id="' . $user->id . '" class="btn btn-danger btn-circle btn-destroy" title="Permanent Delete">
+                                <i class="fas fa-trash"></i> 
+                            </button>';
 
                 $data[] = $nestedData;
             }
