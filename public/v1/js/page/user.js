@@ -209,7 +209,7 @@ jQuery(document).ready(function ($) {
                     $('[name="email"]').val(dataUser.email);
                     $('[name="role"]').val(data.role);
                     $('<input name="_method" value="patch">').attr("type", "hidden").appendTo("#formUser");
-                    $('#imgReview').attr('src', base_url + dataUser.foto);
+                    $('#imgReview').attr('src', dataUser.foto);
 
                     $(".titleForm").html('<i class="fas fa-edit"></i>&nbsp; Edit User');
                     Swal.close();

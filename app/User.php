@@ -44,14 +44,14 @@ class User extends Authenticatable
     public function takeImage()
     {
         if ($this->foto === null) {
-            return "/images/no-image.png";
+            return asset("/images/no-image.png");
         } else {
 
             $exist = Storage::exists($this->foto);
             if ($exist) {
-                return "/storage/" . $this->foto;
+                return asset("/storage/" . $this->foto);
             } else {
-                return "images/no-image.png";
+                return asset("images/no-image.png");
             }
         }
     }

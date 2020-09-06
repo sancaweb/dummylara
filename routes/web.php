@@ -41,10 +41,17 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
 
 
     Route::get('/user/{user}/tes', 'UserController@tes')->name('user.tes');
+
+    //Protected Page
+    Route::get('/adminpage', function () {
+        return view('protectedPage.admin', ['title' => 'Halaman Admin', 'page' => 'adminpage']);
+    })->name('protected.admin');
 });
 
 Route::group(['middleware' => ['auth', 'role:user']], function () {
-    // Route::get('/user', function () {
-    //     return "Halaman User";
-    // });
+
+
+    Route::get('/userpage', function () {
+        return view('protectedPage.user', ['title' => 'Halaman User', 'page' => 'userpage']);
+    })->name('protected.user');
 });

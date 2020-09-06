@@ -25,15 +25,15 @@
     </div>
 
     <li class="nav-item">
-        <a class="nav-link" href="#">
+        <a class="nav-link" href="{{ route('protected.admin') }}">
             <i class="fas fa-users-cog"></i>
             <span>Halaman Admin</span></a>
     </li>
 
     <li class="nav-item">
-        <a class="nav-link" href="#">
+        <a class="nav-link" href="{{ route('protected.user') }}">
             <i class="fas fa-users-cog"></i>
-            <span>Halaman level 1</span></a>
+            <span>Halaman User 1</span></a>
     </li>
 
     <li class="nav-item">
@@ -76,9 +76,9 @@
             document.getElementById('logout-form').submit();">
             <i class="fas fa-sign-out-alt"></i>
             <span>logout</span></a>
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-            @csrf
-        </form>
+        {{-- <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+        @csrf
+        </form> --}}
     </li>
     @endguest
 
