@@ -16,6 +16,13 @@ jQuery(document).ready(function ($) {
             url: base_url + "/activity/data",
             dataType: "json",
             type: "POST",
+            data: function (data) {
+                var userAct = $('#userAct').val();
+                var logNameAct = $('#logNameAct').val();
+
+                data.userAct = userAct;
+                data.logNameAct = logNameAct;
+            }
         },
 
         columns: [{
@@ -68,6 +75,17 @@ jQuery(document).ready(function ($) {
         });
     }
 
+    $('#btn-resetFilter').on('click', function () {
+        $('#userAct').val("");
+        $('#logNameAct').val("");
+        tableActivity.draw();
+    });
+
+    $('#btn-filter').on('click', function () {
+        tableActivity.search("").draw();
+
+    });
+
     $('#tbl-activity').on('click', '.btn-detail', function () {
 
         swal.fire({
@@ -79,7 +97,33 @@ jQuery(document).ready(function ($) {
         });
 
         var idAct = $(this).data('id');
-        var urlDetail = base_url + ""
+        var urlDetail = base_url + "/activity/" + idAct + "/show";
+
+        $.ajax({
+            url: urlDetail,
+            type: "get",
+            success: function (data) {
+                var dataAct = data.data;
+                $('#txt_user').val(dataAct.user);
+                $('#txt_logName').val(dataAct.log_name);
+                $('#txt_desc').val(dataAct.description);
+                $('#txt_data').val(dataAct.properties);
+                $('#txt_created').val(dataAct.created_at);
+
+
+
+                Swal.close();
+                $("#detailAct").modal({
+                    show: true,
+                    backdrop: "static",
+                    keyboard: false // to prevent closing with Esc button (if you want this too)
+                });
+            },
+            error: function (XHR) {
+                console.log(XHR);
+            }
+
+        });
     });
 
 });

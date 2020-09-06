@@ -37,7 +37,7 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
     //Activity
     Route::get('/activity', 'ActivityController@index')->name('act');
     Route::post('/activity/data', 'ActivityController@datatable')->name('act.data');
-    Route::post('/activity/show', 'ActivityController@show')->name('act.show');
+    Route::get('/activity/{activity}/show', 'ActivityController@show')->name('act.show');
 
 
     Route::get('/user/{user}/tes', 'UserController@tes')->name('user.tes');

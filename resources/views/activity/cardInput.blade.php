@@ -9,61 +9,34 @@
     <!-- Card Content - Collapse -->
     <div class="collapse " id="cardFormUser" style="">
         <div class="card-body">
-            <form id="formUser" action="" class="user" method="post" enctype="multipart/form-data">
-                @csrf
-                @if (isset($method))
-                @method($method)
-                @endif
-                <div class="form-group">
-                    <img id="imgReview" src="{{ asset('images/no-image.png') }}" class="card-img-top mt-2"
-                        style="width:230px;height:230px;object-fit:cover; object-position:center;">
-                    <hr>
-                    <label for="foto"> Foto :</label>
-                    <input type="file" value="" name="foto" class="is-invalid" id="foto">
-                    @error('foto')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
+            <div class="form-group row">
+                <div class="col-sm-6 mb-3 mb-sm-0">
+                    <select name="userAct" id="userAct" class="form-control form-control-lg">
+                        <option value="">-= Select User =-</option>
+                        @foreach ($userAct as $act)
+                        <option value="{{ $act->causer_id }}">{{ $act->user->name }}</option>
+                        @endforeach
+                    </select>
                 </div>
-                <hr>
-                <div class="form-group row">
-                    <div class="col-sm-6 mb-3 mb-sm-0">
-                        <input type="text" name="name" value=""
-                            class="form-control form-control-lg @error('name') is-invalid @enderror" id="nama"
-                            placeholder="Nama" autofocus>
-                        @error('name') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                    </div>
-                    <div class="col-sm-6">
-                        <input type="text" name="username" value=""
-                            class="form-control form-control-lg @error('username') is-invalid @enderror" id="username"
-                            placeholder="Username">
-                        @error('username')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
+                <div class="col-sm-6">
+                    <select name="logNameAct" id="logNameAct" class="form-control form-control-lg">
+                        <option value="">-= Select Log Name =-</option>
+                        @foreach ($logNameAct as $log)
+                        <option value="{{ $log->log_name }}">{{ $log->log_name }}</option>
+                        @endforeach
+                    </select>
                 </div>
-                <div class="form-group row">
-                    <div class="col-sm-6 mb-3 mb-sm-0">
-                        <input type="email" value="" name="email"
-                            class="form-control form-control-lg @error('email') is-invalid @enderror" id="email"
-                            placeholder="Email Address" autocomplete="off">
-                        @error('email')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div class="col-sm-6">
-                        <select name="role" id="role" class="form-control form-control-lg">
+            </div>
 
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-
-                </div>
-
-                <button type="submit" id="btn-submitUser" class="btn btn-primary btn-user btn-block">
-                    Save
+            <div class="form-group">
+                <button type="button" id="btn-resetFilter" class="btn btn-success btn-user btn-block">
+                    <i class="fas fa-sync"></i> Reset
                 </button>
-            </form>
+                <button type="button" id="btn-filter" class="btn btn-primary btn-user btn-block">
+                    <i class="fas fa-filter"></i> Filter
+                </button>
+            </div>
+
         </div>
     </div>
 </div>

@@ -10,9 +10,15 @@ class ActivityController extends Controller
 
     public function index()
     {
+        $userAct = Activity::select('causer_id')->distinct()->get();
+        $logNameAct = Activity::select('log_name')->distinct()->get();
+
+
         $dataPage = [
             'title' => "Activity Log",
             'page' => 'activity',
+            'userAct' => $userAct,
+            'logNameAct' => $logNameAct
         ];
         return view('activity.index', $dataPage);
     }
@@ -46,7 +52,16 @@ class ActivityController extends Controller
      */
     public function show(Activity $activity)
     {
-        //
+
+        $dataJson['message'] = "Data Activity ditemukan";
+        $dataJson['data'] = [
+            'user' => $activity->user->name,
+            'log_name' => $activity->log_name,
+            'description' => $activity->description,
+            'properties' => $activity->properties,
+            'created_at' => $activity->created_at->translatedFormat('j F Y H:i:s'),
+        ];
+        return response()->json($dataJson, 200);
     }
 
     /**
@@ -86,6 +101,8 @@ class ActivityController extends Controller
     public function datatable(Request $request)
     {
 
+        // dd($request);
+
         $columns = array(
             0 => 'id',
             1 => 'causer_id',
@@ -101,38 +118,69 @@ class ActivityController extends Controller
         $order = $columns[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
 
+        //custom data
+        $userAct = $request->input('userAct');
+        $logNameAct = $request->input('logNameAct');
+
+
         if (empty($request->input('search.value'))) {
             if ($request->input('order.0.column') == 1) {
 
-                $activities = Activity::whereHas('user', function ($query) use ($dir) {
-                    $query->orderBy('name', $dir);
-                })
-                    ->offset($start)
-                    ->limit($limit)
-                    ->get();
+                $query = Activity::whereHas('user', function ($q) use ($dir) {
+                    $q->orderBy('name', $dir);
+                });
+
+                if (!empty($userAct)) {
+                    $query->where('causer_id', $userAct);
+                }
+                if (!empty($logNameAct)) {
+                    $query->where('log_name', $logNameAct);
+                }
+                $activities = $query->offset($start)->limit($limit)->get();
             } else {
-                $activities = Activity::offset($start)
-                    ->limit($limit)
-                    ->orderBy($order, $dir)
-                    ->get();
+                $query = Activity::offset($start)->limit($limit)
+                    ->orderBy($order, $dir);
+                if (!empty($userAct)) {
+                    $query->where('causer_id', $userAct);
+                }
+                if (!empty($logNameAct)) {
+                    $query->where('log_name', $logNameAct);
+                }
+
+                $activities = $query->get();
             }
         } else {
 
             $search = $request->input('search.value');
-            if ($request->input('order.0.column') == 5) {
-                $activities = Activity::whereHas('user', function ($query) use ($dir, $search) {
-                    $query->orderBy('name', $dir);
-                    $query->where('name', 'LIKE', "%{$search}%");
-                })
-                    ->offset($start)
+            if ($request->input('order.0.column') == 1) {
+                $query = Activity::whereHas('user', function ($q) use ($dir, $search) {
+                    $q->orderBy('name', $dir);
+                    $q->where('name', 'LIKE', "%{$search}%");
+                });
+
+                if (!empty($userAct)) {
+                    $query->where('causer_id', $userAct);
+                }
+                if (!empty($logNameAct)) {
+                    $query->where('log_name', $logNameAct);
+                }
+
+                $activities = $query->offset($start)
                     ->limit($limit)
                     ->get();
             } else {
 
-                $activities =  Activity::whereHas('user', function ($query) use ($search) {
-                    $query->where('name', 'LIKE', "%{$search}%");
-                })
-                    ->orWhere('log_name', 'LIKE', "%{$search}%")
+                $query =  Activity::whereHas('user', function ($q) use ($search) {
+                    $q->where('name', 'LIKE', "%{$search}%");
+                });
+                if (!empty($userAct)) {
+                    $query->where('causer_id', $userAct);
+                }
+                if (!empty($logNameAct)) {
+                    $query->where('log_name', $logNameAct);
+                }
+
+                $activities = $query->orWhere('log_name', 'LIKE', "%{$search}%")
                     ->orWhere('description', 'LIKE', "%{$search}%")
                     ->offset($start)
                     ->limit($limit)
@@ -141,12 +189,20 @@ class ActivityController extends Controller
             }
 
 
-            $totalFiltered = Activity::whereHas('user', function ($query) use ($search) {
-                $query->where('name', 'LIKE', "%{$search}%");
+            $qTotalFiltered = Activity::whereHas('user', function ($q) use ($search) {
+                $q->where('name', 'LIKE', "%{$search}%");
             })
                 ->orWhere('log_name', 'LIKE', "%{$search}%")
-                ->orWhere('description', 'LIKE', "%{$search}%")
-                ->count();
+                ->orWhere('description', 'LIKE', "%{$search}%");
+
+            if (!empty($userAct)) {
+                $qTotalFiltered->where('causer_id', $userAct);
+            }
+            if (!empty($logNameAct)) {
+                $qTotalFiltered->where('log_name', $logNameAct);
+            }
+
+            $totalFiltered = $qTotalFiltered->count();
         }
 
         $data = array();
@@ -167,13 +223,18 @@ class ActivityController extends Controller
             }
         }
 
+
+
+
         $json_data = array(
             "draw"            => intval($request->input('draw')),
             "recordsTotal"    => intval($totalData),
             "recordsFiltered" => intval($totalFiltered),
             "data"            => $data,
             "order"           => $order,
-            "dir" => $dir
+            "dir" => $dir,
+            "userAct" => $userAct,
+            "logNameCat" => $logNameAct,
         );
 
 
