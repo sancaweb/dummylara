@@ -2,6 +2,7 @@
 
 namespace App;
 
+
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Notifications\Notifiable;

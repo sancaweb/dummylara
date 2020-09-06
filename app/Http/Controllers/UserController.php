@@ -14,11 +14,27 @@ use Illuminate\Support\Facades\Storage;
 class UserController extends Controller
 {
 
-    public function tes(User $user)
+    public function userTes()
     {
+        // $start = 0;
+        // $limit = 2;
+        // $where = 'user';
 
-        dd($user->roles()->pluck('name'));
+        // $users = User::join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+        //     ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
+        //     ->select('users.*', 'roles.name as rolename')
+        //     ->orderBy('roles.name', 'asc')
+        //     ->get();
+
+
+        // echo '<ul>';
+        // foreach ($users as $user) {
+        //     echo '<li>' . $user->name . '-' . $user->rolename . '</li>';
+        // }
+
+        // echo '</ul>';
     }
+
 
     public function index()
     {
@@ -61,6 +77,7 @@ class UserController extends Controller
             $user = User::create($input);
 
             $user->assignRole($input['role']);
+            activity('user_management')->withProperties($input)->performedOn($user)->log('Penambahan User');
         } catch (Exception $uStore) {
             DB::rollBack();
 
@@ -86,13 +103,17 @@ class UserController extends Controller
         $dataJson['message'] = "Data User ditemukan";
         $dataJson['data'] = [
             'dataUser' => $user,
+            // 'role' => $user->roles()->pluck('name'),
+            'role' => $user->getRoleNames(),
             'action' => route('user.update', $user->id)
         ];
+
         return response()->json($dataJson, 200);
     }
 
     public function update(UserRequest $request, User $user)
     {
+
         DB::beginTransaction();
 
         try {
@@ -105,8 +126,13 @@ class UserController extends Controller
                 $fotoUrl = $user->foto;
             }
 
+            if ($input['password'] === null) {
+                $input = $request->except('password');
+            } else {
+                $input['password'] = Hash::make($input['password']);
+            }
 
-            $input['password'] = Hash::make($input['password']);
+
             $input['name'] = ucwords($input['name']);
             $input['foto'] = $fotoUrl;
             $user->update($input);
@@ -114,9 +140,15 @@ class UserController extends Controller
             $user->syncRoles($input['role']);
         } catch (Exception $userUpdate) {
             DB::rollBack();
-            $dataJson['exception'] = $userUpdate;
+            $dataJson['exception'] = " " . $userUpdate;
             $dataJson['message'] = "Ada kesalahan peng-kodean update User. Detail Error: ";
             return response()->json($dataJson, 503);
+        }
+
+        try {
+            activity('user_management')->withProperties($input)->performedOn($user)->log('Perubahan User');
+        } catch (Exception $erAct) {
+            DB::rollBack();
         }
 
         DB::commit();
@@ -165,19 +197,21 @@ class UserController extends Controller
         return response()->json($dataJson, 200);
     }
 
+
     public function datatable(Request $request)
     {
+
         $columns = array(
             0 => 'id',
             1 => 'foto',
             2 => 'name',
-            3 => 'usrname',
+            3 => 'username',
             4 => 'email',
-            5 => 'created_at',
+            5 => 'role',
+            6 => 'created_at',
         );
 
         $totalData = User::count();
-
         $totalFiltered = $totalData;
 
         $limit = $request->input('length');
@@ -186,24 +220,67 @@ class UserController extends Controller
         $dir = $request->input('order.0.dir');
 
         if (empty($request->input('search.value'))) {
+            if ($request->input('order.0.column') == 5) {
 
-            $users = User::offset($start)
-                ->limit($limit)
-                ->orderBy($order, $dir)
-                ->get();
+                $users = User::join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+                    ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
+                    ->select('users.*', 'roles.name as rolename')
+                    ->offset($start)
+                    ->limit($limit)
+                    ->orderBy('roles.name', $dir)
+                    ->get();
+            } else {
+                $users = User::offset($start)
+                    ->limit($limit)
+                    ->orderBy($order, $dir)
+                    ->get();
+            }
         } else {
+
             $search = $request->input('search.value');
+            if ($request->input('order.0.column') == 5) {
+                $users = User::join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+                    ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
+                    ->select('users.*', 'roles.name as rolename')
+                    ->where('roles.name', 'LIKE', "%{$search}%")
+                    ->orWhere('users.name', 'LIKE', "%{$search}%")
+                    ->orWhere('username', 'LIKE', "%{$search}%")
+                    ->orWhere('email', 'LIKE', "%{$search}%")
+                    ->offset($start)
+                    ->limit($limit)
+                    ->orderBy('roles.name', $dir)
+                    ->get();
 
-            $users =  User::where('name', 'LIKE', "%{$search}%")
-                ->orWhere('username', 'LIKE', "%{$search}%")
-                ->orWhere('email', 'LIKE', "%{$search}%")
-                ->offset($start)
-                ->limit($limit)
-                ->orderBy($order, $dir)
-                ->get();
+
+                // $users =  User::whereHas('roles', function ($query) use ($search, $dir) {
+                //     $query->where('name', 'LIKE', "%{$search}%");
+                //     $query->orderBy('name', $dir);
+                // })
+                //     ->orWhere('name', 'LIKE', "%{$search}%")
+                //     ->orWhere('username', 'LIKE', "%{$search}%")
+                //     ->orWhere('email', 'LIKE', "%{$search}%")
+                //     ->offset($start)
+                //     ->limit($limit)
+                //     ->get();
+            } else {
+
+                $users =  User::whereHas('roles', function ($query) use ($search) {
+                    $query->where('roles.name', 'LIKE', "%{$search}%");
+                })
+                    ->orWhere('name', 'LIKE', "%{$search}%")
+                    ->orWhere('username', 'LIKE', "%{$search}%")
+                    ->orWhere('email', 'LIKE', "%{$search}%")
+                    ->offset($start)
+                    ->limit($limit)
+                    ->orderBy($order, $dir)
+                    ->get();
+            }
 
 
-            $totalFiltered = User::where('name', 'LIKE', "%{$search}%")
+            $totalFiltered = User::whereHas('roles', function ($query) use ($search) {
+                $query->where('roles.name', 'LIKE', "%{$search}%");
+            })
+                ->orWhere('name', 'LIKE', "%{$search}%")
                 ->orWhere('username', 'LIKE', "%{$search}%")
                 ->orWhere('email', 'LIKE', "%{$search}%")
                 ->count();
@@ -219,6 +296,7 @@ class UserController extends Controller
                 $nestedData['name'] = $user->name;
                 $nestedData['username'] = $user->username;
                 $nestedData['email'] = $user->email;
+                $nestedData['role'] = $user->getRoleNames();
                 $nestedData['created_at'] = $user->created_at->translatedFormat('j F Y H:i:s');
 
                 $nestedData['action'] = '<button data-id="' . $user->id . '" class="btn btn-warning btn-circle btn-edit">
@@ -258,7 +336,6 @@ class UserController extends Controller
         );
 
         $totalData = User::onlyTrashed()->count();
-
         $totalFiltered = $totalData;
 
         $limit = $request->input('length');

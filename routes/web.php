@@ -19,6 +19,9 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
 
     /** Users */
     Route::get('/user', 'UserController@index')->name('user');
+    Route::get('/user/user', 'UserController@userTes')->name('user.userTes');
+
+
     Route::post('/usertable', 'UserController@datatable')->name('user.datatable');
     Route::post('/user', 'UserController@store')->name('user.store');
     Route::get('/user/{user}/edit', 'UserController@edit')->name('user.edit');
@@ -30,6 +33,11 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
     Route::post('/usertrashtable', 'UserController@trashedDatatable')->name('user.trashedTable');
     Route::post('/usertrash/{user}/restore', 'UserController@restore')->name('user.restore');
     Route::delete('/usertrash/{user}/destroy', 'UserController@destroy')->name('user.destroy');
+
+    //Activity
+    Route::get('/activity', 'ActivityController@index')->name('act');
+    Route::post('/activity/data', 'ActivityController@datatable')->name('act.data');
+    Route::post('/activity/show', 'ActivityController@show')->name('act.show');
 
 
     Route::get('/user/{user}/tes', 'UserController@tes')->name('user.tes');

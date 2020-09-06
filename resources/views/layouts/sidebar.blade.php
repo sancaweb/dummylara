@@ -56,6 +56,11 @@
             <i class="fas fa-users-cog"></i>
             <span>User Management</span></a>
     </li>
+    <li class="nav-item {{ $page == 'activity' ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('act') }}">
+            <i class="fas fa-clipboard-list"></i>
+            <span>Activity Log</span></a>
+    </li>
     @endif
 
     @guest

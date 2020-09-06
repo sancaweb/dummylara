@@ -5,12 +5,21 @@
             role="button" aria-expanded="true" aria-controls="cardUserData">
             <h6 class="m-0 font-weight-bold text-primary">Data Users</h6>
         </a>
-        <a href="{{ route('user.trash') }}" class="btn btn-danger btn-icon-split">
-            <span class="icon text-white-50">
-                <i class="fas fa-trash"></i>
-            </span>
-            <span class="text">User Trash</span>
-        </a>
+        <div>
+            <button type="button" id="btn-userReload" class="btn btn-success btn-icon-split ">
+                <span class="icon text-white-50">
+                    <i class="fas fa-sync"></i>
+                </span>
+                <span class="text">Reload Data</span>
+            </button>
+            <a href="{{ route('user.trash') }}" class="btn btn-danger btn-icon-split">
+                <span class="icon text-white-50">
+                    <i class="fas fa-trash"></i>
+                </span>
+                <span class="text">User Trash</span>
+            </a>
+        </div>
+
     </div>
     <div class="card-body table-responsive collapse show" id="cardUserData">
         <table class="table table-bordered" id="tbl-user" style="width: 100%">
@@ -21,6 +30,7 @@
                     <th class="text-center">Nama</th>
                     <th class="text-center">Username</th>
                     <th class="text-center">Email</th>
+                    <th class="text-center">Role</th>
                     <th class="text-center">Created at</th>
                     <th class="text-center">Action</th>
                 </tr>

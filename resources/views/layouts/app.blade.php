@@ -117,7 +117,11 @@
     </script>
 
     @if ($page == 'user')
-    <script src="{{ asset('v1/js/page/user.js?v=1.00') }}"></script>
+    <script src="{{ asset('v1/js/page/user.js?v=1.05') }}"></script>
+    @endif
+
+    @if ($page == 'activity')
+    <script src="{{ asset('v1/js/page/activity.js?v=1.00') }}"></script>
     @endif
     <!-- Page level plugins -->
 

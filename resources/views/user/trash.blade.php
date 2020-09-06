@@ -9,13 +9,21 @@
                     data-toggle="collapse" role="button" aria-expanded="true" aria-controls="cardUserDataTrash">
                     <h6 class="m-0 font-weight-bold text-primary">Trashed Users</h6>
                 </a>
+                <div>
+                    <button type="button" id="btn-userReloadTrash" class="btn btn-success btn-icon-split ">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-sync"></i>
+                        </span>
+                        <span class="text">Reload Data</span>
+                    </button>
 
-                <a href="{{ route('user') }}" class="btn btn-primary     btn-icon-split">
-                    <span class="icon text-white-50">
-                        <i class="fas fa-users"></i>
-                    </span>
-                    <span class="text">Data User</span>
-                </a>
+                    <a href="{{ route('user') }}" class="btn btn-primary     btn-icon-split">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-users"></i>
+                        </span>
+                        <span class="text">Data User</span>
+                    </a>
+                </div>
             </div>
 
             <div class="card-body table-responsive collapse show" id="cardUserDataTrash">

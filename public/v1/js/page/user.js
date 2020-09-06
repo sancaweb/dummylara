@@ -14,8 +14,9 @@ jQuery(document).ready(function ($) {
         ajax: {
             url: base_url + "/usertable",
             dataType: "json",
-            type: "POST"
+            type: "POST",
         },
+
         columns: [{
                 data: "no"
             },
@@ -30,6 +31,9 @@ jQuery(document).ready(function ($) {
             },
             {
                 data: "email"
+            },
+            {
+                data: "role"
             },
             {
                 data: "created_at"
@@ -52,10 +56,20 @@ jQuery(document).ready(function ($) {
     });
 
     function refreshTable() {
-        // tableUser.search("").draw();
+        tableUser.search("").draw();
         tableUser.ajax.reload();
     }
     /** ./end datatable */
+
+    var btnReloadUser = document.getElementById('btn-userReload');
+    if (btnReloadUser) {
+
+        btnReloadUser.addEventListener('click', function () {
+            refreshTable();
+        });
+    }
+
+
 
 
     function readURL(input, review) {
@@ -135,13 +149,15 @@ jQuery(document).ready(function ($) {
             error: function (jqXHR, textStatus, errorThrown) {
                 console.log(jqXHR);
                 if (jqXHR.responseJSON.exception) {
+                    console.log(jqXHR.responseJSON.exception)
                     var message = jqXHR.responseJSON.message;
+                    var exception = jqXHR.responseJSON.exception;
                     Swal.fire({
                         icon: "error",
                         title: "Error Submit data. <br>Copy error dan hubungi Programmer!",
                         html: '<div class="alert alert-danger text-left" role="alert">' +
-                            '<p><strong>' + jqXHR.responseJSON.exception + '</strong></p>' +
-                            '<p>' + message + '</p>' +
+                            '<p><strong>' + message + '</strong></p>' +
+                            '<p>' + exception + '</p>' +
                             '</div>',
                         allowOutsideClick: false
                     });
@@ -183,6 +199,7 @@ jQuery(document).ready(function ($) {
             url: urlEdit,
             type: "get",
             success: function (data) {
+                console.log(data);
                 if (data.data) {
                     var data = data.data;
                     var dataUser = data.dataUser;
@@ -190,6 +207,7 @@ jQuery(document).ready(function ($) {
                     $('[name="name"]').val(dataUser.name);
                     $('[name="username"]').val(dataUser.username);
                     $('[name="email"]').val(dataUser.email);
+                    $('[name="role"]').val(data.role);
                     $('<input name="_method" value="patch">').attr("type", "hidden").appendTo("#formUser");
                     $('#imgReview').attr('src', base_url + dataUser.foto);
 
@@ -346,6 +364,13 @@ jQuery(document).ready(function ($) {
         // tableUserTrash.search("").draw();
         tableUserTrash.ajax.reload();
     } // ./end datatable trash
+
+    var btnReloadTrash = document.getElementById('btn-userReloadTrash');
+    if (btnReloadTrash) {
+        btnReloadTrash.addEventListener('click', function () {
+            refreshTableTrash();
+        });
+    }
 
 
     $('#tbl-userTrash').on("click", ".btn-restore", function () {
