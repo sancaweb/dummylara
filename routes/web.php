@@ -55,3 +55,6 @@ Route::group(['middleware' => ['auth', 'role:user']], function () {
         return view('protectedPage.user', ['title' => 'Halaman User', 'page' => 'userpage']);
     })->name('protected.user');
 });
+
+Route::get('/tes', 'TesController@index')->name('tes');
+Route::get('/tes/covid', 'TesController@covidProvinsi')->name('covid');
