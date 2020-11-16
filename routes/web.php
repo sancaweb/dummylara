@@ -13,9 +13,7 @@ route::group(['middleware' => ['auth']], function () {
 
 
 Route::group(['middleware' => ['auth', 'role:admin']], function () {
-    // Route::get('/admin', function () {
-    //     return "Halaman Admin";
-    // });
+
 
     /** Users */
     Route::get('/user', 'UserController@index')->name('user');
@@ -43,9 +41,14 @@ Route::group(['middleware' => ['auth', 'role:admin']], function () {
     Route::get('/user/{user}/tes', 'UserController@tes')->name('user.tes');
 
     //Protected Page
-    Route::get('/adminpage', function () {
-        return view('protectedPage.admin', ['title' => 'Halaman Admin', 'page' => 'adminpage']);
-    })->name('protected.admin');
+    // Route::get('/adminpage', function () {
+    //     return view('protectedPage.admin', ['title' => 'Halaman Admin', 'page' => 'adminpage']);
+    // })->name('protected.admin');
+
+
+    /** ARSIP */
+    Route::get('arsip', 'ArsipController@index')->name('arsip');
+    Route::post('arsip', 'ArsipController@store')->name('arsip.store');
 });
 
 Route::group(['middleware' => ['auth', 'role:user']], function () {

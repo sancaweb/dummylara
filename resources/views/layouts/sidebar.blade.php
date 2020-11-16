@@ -21,13 +21,13 @@
     <hr class="sidebar-divider">
     <!-- Heading -->
     <div class="sidebar-heading">
-        Protected Page
+        Data Master
     </div>
 
     <li class="nav-item">
-        <a class="nav-link" href="{{ route('protected.admin') }}">
-            <i class="fas fa-users-cog"></i>
-            <span>Halaman Admin</span></a>
+        <a class="nav-link" href="{{ route('arsip') }}">
+            <i class="far fa-file-pdf"></i>
+            <span>Arsip</span></a>
     </li>
 
     <li class="nav-item">

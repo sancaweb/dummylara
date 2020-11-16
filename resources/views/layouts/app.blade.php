@@ -23,7 +23,9 @@
     <!-- datatable -->
     {{-- <link href="//cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" rel="stylesheet"> --}}
     <link href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css" rel="stylesheet">
-
+     <!-- select2 -->
+     <link href="{{ asset('v1/vendor/select2/css/select2.min.css') }}" rel="stylesheet">
+     <link href="{{ asset('v1/vendor/select2/css/select2-bootstrap4.min.css') }}" rel="stylesheet">
 
 </head>
 
@@ -121,6 +123,10 @@
 
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('v1/js/sb-admin-2.min.js') }}"></script>
+
+    <!-- select2 -->
+    <script src="{{ asset('v1/vendor/select2/js/select2.min.js') }}"></script>
+
     <script>
         let base_url = "{{ route('dashboard') }}";
 
@@ -133,7 +139,12 @@
     @if ($page == 'activity')
     <script src="{{ asset('v1/js/page/activity.js?v=1.00') }}"></script>
     @endif
+
+    @if ($page == 'arsip')
+    <script src="{{ asset('v1/js/page/arsip.js?v=1.00') }}"></script>
+    @endif
     <!-- Page level plugins -->
+    
 
     <!-- Page level custom scripts -->
 
