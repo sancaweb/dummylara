@@ -5,8 +5,8 @@
 
 
             <form id="formPost" action="{{ route('post.store') }}" method="post">
+                @csrf
                 <div class="row">
-                    @csrf
                     <div class="col-8">
                         <div class="card card-outline card-success">
                             <div class="card-header">
@@ -93,8 +93,8 @@
 
                                 <div class="form-group">
                                     <label>Tags</label>
-                                    <select data-placeholder="Tags" class="form-control select2" name="tags[]" id="tags"
-                                        multiple>
+                                    <select data-placeholder="Tags" class="form-control select2" name="tags[]"
+                                        id="tags" multiple>
                                     </select>
                                 </div>
                                 <!-- /.form-group -->
@@ -102,8 +102,9 @@
                                 <div class="form-group">
                                     <label for="published_date">Published Date</label>
                                     <div class="input-group" id="published_date" data-target-input="nearest">
-                                        <input id="inputPublishedDate" type="text" class="form-control datetimepicker-input"
-                                            value="" data-target="#published_date" name="published_date" required>
+                                        <input id="inputPublishedDate" type="text"
+                                            class="form-control datetimepicker-input" value=""
+                                            data-target="#published_date" name="published_date" required>
 
                                         <div class="input-group-append" data-target="#published_date"
                                             data-toggle="datetimepicker">
