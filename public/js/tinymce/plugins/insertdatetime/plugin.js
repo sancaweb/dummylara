@@ -1,5 +1,5 @@
 /**
- * TinyMCE version 6.0.3 (2022-05-25)
+ * TinyMCE version 6.4.2 (2023-04-26)
  */
 
 (function () {
@@ -75,8 +75,7 @@
     };
     const updateElement = (editor, timeElm, computerTime, userTime) => {
       const newTimeElm = editor.dom.create('time', { datetime: computerTime }, userTime);
-      timeElm.parentNode.insertBefore(newTimeElm, timeElm);
-      editor.dom.remove(timeElm);
+      editor.dom.replace(newTimeElm, timeElm);
       editor.selection.select(newTimeElm, true);
       editor.selection.collapse(false);
     };

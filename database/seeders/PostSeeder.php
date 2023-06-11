@@ -37,26 +37,26 @@ class PostSeeder extends Seeder
             'berita pssi'
         ];
 
-        foreach ($tags as $tag) {
-            Tag::create([
-                'name' => $tag
-            ]);
-        }
-
-        // $dataTags = [];
-        // for ($t = 0; $t < 5000; $t++) {
-        //     $name = $faker->sentence(rand(1, 3));
-        //     $slug = SlugService::createSlug(Tag::class, 'slug', $name);
-
-        //     $dataTags[] = [
-        //         'name' => rtrim($name, '.'),
-        //         'slug' => $slug,
-        //         'created_at' => date('Y-m-d H:i:s'),
-        //         'updated_at' => date('Y-m-d H:i:s'),
-        //     ];
+        // foreach ($tags as $tag) {
+        //     Tag::create([
+        //         'name' => $tag
+        //     ]);
         // }
 
-        // Tag::insert($dataTags);
+        $dataTags = [];
+        foreach ($tags as $tag) {
+            $name = $tag;
+            $slug = SlugService::createSlug(Tag::class, 'slug', $name);
+
+            $dataTags[] = [
+                'name' => rtrim($name, '.'),
+                'slug' => $slug,
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ];
+        }
+
+        Tag::insert($dataTags);
 
 
         $status = [
@@ -74,8 +74,8 @@ class PostSeeder extends Seeder
                 'title' => $faker->sentence(5),
                 'content' => $faker->text(),
                 'category_id' => $getCats->random(),
-                // 'status' => $status[rand(0, 1)],
-                'status' => "published",
+                'status' => $status[rand(0, 1)],
+                // 'status' => "published",
                 'published_date' => Carbon::parse($faker->dateTimeThisMonth())->format('Y-m-d H:i:s')
 
             ]);
