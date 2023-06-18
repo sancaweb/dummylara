@@ -292,6 +292,7 @@ $(function () {
     $("#published_date").datetimepicker({
         minDate: moment().format("YYYY-MM-DD HH:mm:ss"),
         sideBySide: true,
+        defaultDate: moment().format("YYYY-MM-DD HH:mm:ss"),
         icons: {
             time: "far fa-clock",
             date: "far fa-calendar-alt",

@@ -6,7 +6,6 @@ use App\Traits\WhosTrait;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Database\Eloquent\Builder;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -22,13 +21,22 @@ class Post extends Model
         'published_date', 'featured_image', 'thumb', 'created_by', 'updated_by'
     ];
 
-    //Anonymous Global Scope
-    // protected static function booted()
-    // {
-    //     static::addGlobalScope('statusPost', function (Builder $builder) {
-    //         $builder->where('status', '=', 'published');
-    //     });
-    // }
+    /**
+     * Local Scope for automatically filter only published
+     */
+    public function scopePublished($query)
+    {
+        $query->where('status', '=', 'published');
+    }
+
+    /**
+     * Local Scope for automatically filter only < date now
+     */
+
+    public function scopePublishDate($query)
+    {
+        $query->where('published_date', '<', now());
+    }
 
     public function sluggable(): array
     {
@@ -56,7 +64,7 @@ class Post extends Model
 
     public function takeImage()
     {
-        if ($this->featured_image === null) {
+        if ($this->featured_image === null || $this->featured_image == '') {
             return asset("images/no-image.png");
         } else {
             $exist = Storage::exists($this->featured_image);
@@ -71,7 +79,7 @@ class Post extends Model
 
     public function takeThumb()
     {
-        if ($this->thumb === null) {
+        if ($this->thumb === null || $this->thumb == '') {
             return asset("images/no-image.png");
         } else {
             $exist = Storage::exists($this->thumb);

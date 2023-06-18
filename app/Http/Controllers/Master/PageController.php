@@ -39,7 +39,7 @@ class PageController extends Controller
             "penulis" => $penulis
         ];
 
-        return view('master.page.index', $dataPage);
+        return view('page.index', $dataPage);
     }
 
     /**
@@ -55,7 +55,7 @@ class PageController extends Controller
             "page" => "page",
         ];
 
-        return view('master.page.inputForm', $dataPage);
+        return view('page.inputForm', $dataPage);
     }
 
     /**
@@ -108,15 +108,17 @@ class PageController extends Controller
         DB::beginTransaction();
         try {
 
-
-            $newPage = Page::create([
+            $dataPage = [
                 'title' => $title,
                 'content' => $content,
                 'published_date' => Carbon::createFromFormat('d-m-Y H:i:s', $publishedDate)->format('Y-m-d H:i:s'),
                 'status' => $status,
                 'featured_image' => $featuredImage,
                 'thumb' => $thumb,
-            ]);
+            ];
+
+
+            $newPage = Page::create($dataPage);
 
 
             activity('page_management')->withProperties($newPage)->performedOn($newPage)->log('Create Page');
@@ -178,8 +180,6 @@ class PageController extends Controller
                 "published_date" => Carbon::parse($getPage->published_date)->format('d-m-Y H:i:s'),
             ];
 
-
-
             $dataPage = [
                 "pageTitle" => "Edit Page",
                 "page" => "editPage",
@@ -187,7 +187,7 @@ class PageController extends Controller
             ];
 
 
-            return view('master.page.editForm', $dataPage);
+            return view('page.editForm', $dataPage);
         } else {
 
             return redirect()->route('page')->with(

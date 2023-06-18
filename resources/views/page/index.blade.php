@@ -79,5 +79,5 @@
         </div>
         <!-- ./ .container-fluid -->
     </section>
-    @include('master.page.modalFilter')
+    @include('page.modalFilter')
 @endsection

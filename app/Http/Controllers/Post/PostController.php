@@ -206,7 +206,7 @@ class PostController extends Controller
 
             $categories = Category::orderBy('name', 'ASC')->get();
             $dataPage = [
-                "pageTitle" => "Input Post",
+                "pageTitle" => "Edit Post",
                 "page" => "editPost",
                 "categories" => $categories,
                 "dataPost" => $dataPost,
@@ -265,7 +265,7 @@ class PostController extends Controller
 
             if (!empty($getFeaturedImage)) {
                 $exImage = explode("/storage/", $getFeaturedImage);
-                $featuredImage = $exImage[1];
+                $featuredImage = isset($exImage[1]) ? $exImage[1] : '';
             } else {
                 $featuredImage = '';
             }
@@ -274,7 +274,8 @@ class PostController extends Controller
 
             if (!empty($getThumb)) {
                 $exThumb = explode("/storage/", $getThumb);
-                $thumb = $exThumb[1];
+
+                $thumb = isset($exThumb[1]) ? $exThumb[1] : '';
             } else {
                 $thumb = '';
             }

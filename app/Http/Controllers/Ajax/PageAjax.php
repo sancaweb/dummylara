@@ -44,6 +44,7 @@ class PageAjax extends Controller
             ], "Error Decrypt ID Page", 400);
         }
 
+        //input withoutglobalscope
         $getPage = Page::find($idPage);
         if ($getPage) {
             DB::beginTransaction();
