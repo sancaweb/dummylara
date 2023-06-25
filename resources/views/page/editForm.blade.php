@@ -27,8 +27,8 @@
 
                                 <div class="form-group">
                                     <label for="title">Title</label>
-                                    <input id="title" value="{{ $dataPage['title'] }}" type="text" class="form-control"
-                                        placeholder="Judul Page" name="title" required>
+                                    <input id="title" value="{{ $dataPage['title'] }}" type="text"
+                                        class="form-control" placeholder="Judul Page" name="title" required>
                                 </div>
                                 <!-- /.form-group -->
 
@@ -75,8 +75,8 @@
                                                 <i class="fa fa-picture-o"></i> Choose Image
                                             </a>
                                         </span>
-                                        <input value="{{ $dataPage['featured_image'] }}" id="inputPath"
-                                            class="form-control" type="text" name="featured_image" readonly>
+                                        <input value="{{ $dataPage['featured_image'] }}" id="inputPath" class="form-control"
+                                            type="text" name="featured_image" readonly>
                                     </div>
                                     <input value="{{ $dataPage['thumb'] }}" id="thumbImage" class="form-control"
                                         type="hidden" name="thumb" readonly>
@@ -84,9 +84,10 @@
 
 
                                 <div class="form-group">
-                                    <label for="published_date">Published Date </label>
+                                    <label for="published_date">Published Date {{ $dataPage['published_date'] }}</label>
                                     <div class="input-group" id="published_date" data-target-input="nearest">
-                                        <input id="inputPublishedDate" type="text" class="form-control datetimepicker-input"
+                                        <input id="inputPublishedDate" type="text"
+                                            class="form-control datetimepicker-input"
                                             value="{{ $dataPage['published_date'] }}" data-target="#published_date"
                                             name="published_date" required>
 
@@ -96,6 +97,7 @@
                                         </div>
                                     </div>
                                 </div>
+
                                 <!-- /.form-group -->
 
                                 <div class="form-group">

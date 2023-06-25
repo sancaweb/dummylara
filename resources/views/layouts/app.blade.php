@@ -29,6 +29,10 @@
     <!-- Tempusdominus Bootstrap 4 -->
     <link rel="stylesheet"
         href="{{ asset('v1/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
+
+    <!-- Tempusdominus v6 -->
+    {{-- <link rel="stylesheet" href="{{ asset('vendor/tempus-dominus/dist/css/tempus-dominus.min.css') }}"
+        crossorigin="anonymous"> --}}
     <!-- Select2 -->
     <link rel="stylesheet" href="{{ asset('v1/plugins/select2/css/select2.min.css') }}">
     <link rel="stylesheet" href="{{ asset('v1/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
@@ -106,9 +110,10 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <button onclick="event.preventDefault();
-                    document.getElementById('logout-form').submit();" class="btn btn-primary"
-                        type="button">Logout</button>
+                    <button
+                        onclick="event.preventDefault();
+                    document.getElementById('logout-form').submit();"
+                        class="btn btn-primary" type="button">Logout</button>
                 </div>
             </div>
         </div>
@@ -157,6 +162,8 @@
     <!-- Tempusdominus Bootstrap 4 -->
     <script src="{{ asset('v1/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
 
+    <!-- Tempusdominus v6 -->
+    {{-- <script src="{{ asset('vendor/tempus-dominus/dist/js/tempus-dominus.min.js') }}" crossorigin="anonymous"></script> --}}
     <!-- lightbox -->
     <script src="{{ asset('v1/plugins/lightbox/js/lightbox.min.js') }}"></script>
 
@@ -164,6 +171,7 @@
     <script>
         let base_url = "{{ route('root') }}";
     </script>
+    <script src="{{ asset('js/localization.js') }}"></script>
 
     <!-- AdminLTE App -->
     <script src="{{ asset('v1/js/adminlte.min.js') }}"></script>

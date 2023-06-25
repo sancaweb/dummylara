@@ -102,19 +102,8 @@ $(function () {
         });
     });
 
-    let publishedDate = moment($("#inputPublishedDate").val(), [
-        "DD-MM-YYYY HH:mm:ss",
-        "YYYY-MM-DD HH:mm:ss",
-    ]);
-
     $("#published_date").datetimepicker({
-        minDate: moment(publishedDate).format("YYYY-MM-DD HH:mm:ss"),
-        sideBySide: true,
-        icons: {
-            time: "far fa-clock",
-            date: "far fa-calendar-alt",
-        },
-        date: publishedDate,
+        maxDate: moment().format("YYYY-MM-DD HH:mm:ss"),
         format: "DD-MM-YYYY HH:mm:ss",
         useCurrent: false,
     });

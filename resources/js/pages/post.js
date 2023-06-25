@@ -298,7 +298,7 @@ $(function () {
             date: "far fa-calendar-alt",
         },
         format: "DD-MM-YYYY HH:mm:ss",
-        useCurrent: false,
+        useCurrent: true,
     });
 
     $("#formPost").on("submit", function (e) {
