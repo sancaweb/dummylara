@@ -23,6 +23,7 @@ class Post extends Model
 
     /**
      * Local Scope for automatically filter only published
+     * use $query->published()
      */
     public function scopePublished($query)
     {

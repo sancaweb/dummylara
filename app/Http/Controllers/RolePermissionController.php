@@ -420,15 +420,13 @@ class RolePermissionController extends Controller
 
     public function assign()
     {
-        $countPermissions = Permission::count();
+        $getPermissions = Permission::get();
 
-        $pembagian = $countPermissions / 2;
+        $countPermissions = $getPermissions->count();
+        $pembagian = floor($countPermissions / 2);
 
-        $startSatu = 0;
-        $startDua = $pembagian;
-
-        $permissionsSatu = Permission::offset($startSatu)->limit($pembagian)->get();
-        $permissionsDua = Permission::offset($startDua)->limit($pembagian)->get();
+        $permissionsSatu = $getPermissions->take($pembagian);
+        $permissionsDua = $getPermissions->slice($pembagian);
 
 
         $dataPage = [

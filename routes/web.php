@@ -1,21 +1,22 @@
 <?php
 
-use App\Http\Controllers\ActivityController;
-use App\Http\Controllers\Ajax\PageAjax;
-use App\Http\Controllers\Ajax\PostAjax;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\Master\PageController;
-use App\Http\Controllers\Post\CategoryController;
-use App\Http\Controllers\Post\PostController;
-use App\Http\Controllers\Post\TagController;
-use App\Http\Controllers\ProfileController;
+use App\Models\Post\Category;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Ajax\PageAjax;
+use App\Http\Controllers\Ajax\PostAjax;
 use App\Http\Controllers\RoleController;
-use App\Http\Controllers\RolePermissionController;
-use App\Http\Controllers\TestingController;
 use App\Http\Controllers\UserController;
-use App\Models\Post\Category;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TestingController;
+use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\Post\TagController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Post\PostController;
+use App\Http\Controllers\Master\PageController;
+use App\Http\Controllers\Frontend\HomeController;
+use App\Http\Controllers\Post\CategoryController;
+use App\Http\Controllers\RolePermissionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,9 +31,10 @@ use App\Models\Post\Category;
 
 Route::get('/test', [TestingController::class, 'index'])->name('testing');
 
+
+
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/', [DashboardController::class, 'index'])->name('root');
-
     /**
      * ALL AJAX CONTROLLERS
      */
